@@ -8,18 +8,26 @@ const Registration = () => {
         email: '',
         password: '',
         phonenumber: '',
-        file: null,
+        image: null,
     });
 
     const [imagePreview, setImagePreview] = useState(null);
     const [errors, setErrors] = useState({});
     const [valid, setValid] = useState(true);
 
+    // const handleImage = (e) => {
+    //     const file = e.target.files[0];
+    //     setData(prevData => ({ ...prevData, file }));
+    //     setImagePreview(URL.createObjectURL(file));
+    // };
+
     const handleImage = (e) => {
         const file = e.target.files[0];
-        setData(prevData => ({ ...prevData, file }));
-        setImagePreview(URL.createObjectURL(file));
+        setData(prevData => ({ ...prevData, image: file }));
+        setImagePreview(URL.createObjectURL(file)); 
     };
+    
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -51,7 +59,7 @@ const Registration = () => {
             isValid = false;
             validationErrors.password = "Password must be at least 8 characters";
         }
-        if (!data.file) {
+        if (!data.image) {
             isValid = false;
             validationErrors.image = "Please upload an image";
         }
@@ -66,17 +74,17 @@ const Registration = () => {
             formData.append('email', data.email);
             formData.append('password', data.password);
             formData.append('phonenumber', data.phonenumber);
-            formData.append('image', data.file);
+            formData.append('image', data.image);
 
             const url = 'https://www.appssquare.sa/api/submit';
             const headers = {
                 "Content-Type": "multipart/form-data",
             };
-
+console.log('FormData:', formData);
             try {
                 const response = await axios.post(url, formData, { headers });
                 console.log('Success:', response.data);
-            } catch (e) {
+            } catch (error) {
                 console.error('Error:', e.response);
             }
         }
@@ -147,7 +155,7 @@ const Registration = () => {
 
                     {imagePreview && (
                         <div>
-                            <p>Selected file: {data.file.name}</p>
+                            <p>Selected file: {data.image.name}</p>
                             <img src={imagePreview} alt="Preview" style={{ width: '170px', height: '170px' }} />
                         </div>
                     )}
